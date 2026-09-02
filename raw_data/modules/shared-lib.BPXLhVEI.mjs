@@ -1,0 +1,3 @@
+import{t as e}from"./rolldown-runtime.Dh6celcD.mjs";function t(e,t){return{description:`Born from creativity, built on culture.
+Hekaya Haus transforms ideas into identity that last beyond the screen offering content creation, digital marketing, media production, CGI/VFX, branding, PR, billboards placement, web / App, CRM & AI solutions.`,favicon:`https://framerusercontent.com/assets/Ib5R9yxwM0Vh27vqV5IBv6k4CM.jpg`,robots:`max-image-preview:large`,socialImage:`https://framerusercontent.com/assets/2IihrIQ0ieuvYXk7EKsMLDb4.png`,title:`HekayaHaus | Creative Media & Marketing Haus`}}var n=e((()=>{}));export{t as n,n as t};
+//# sourceMappingURL=shared-lib.BPXLhVEI.mjs.map

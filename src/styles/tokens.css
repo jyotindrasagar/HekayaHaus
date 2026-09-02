@@ -1,0 +1,61 @@
+:root {
+  /* Locked Palette */
+  --color-bg: #F7F5EF;
+  --color-surface: #FFFEFA;
+  --color-text: #0B0D12;
+  --color-muted: #555960;
+  --color-blue: #1746FF;
+  --color-blue-deep: #0B2FCE;
+  --color-blue-soft: #DCE5FF;
+  --color-navy: #08152F;
+  --color-border: #D9D8D2;
+  --color-border-subtle: #C7D4FF;
+  --color-white: #FFFFFF;
+
+  /* Inverse Tokens for Cinematic Navy Sections */
+  --color-text-inverse: #FFFFFF;
+  --color-muted-inverse: #DCE5FF;
+  --color-border-inverse: rgba(255, 255, 255, 0.14);
+
+  /* Button Tokens */
+  --btn-primary-bg: var(--color-blue);
+  --btn-primary-bg-hover: var(--color-blue-deep);
+  --btn-primary-text: #FFFFFF;
+  --btn-secondary-border: var(--color-border);
+  --btn-secondary-border-hover: var(--color-blue);
+
+  /* Typography */
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-body: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --measure: 62ch;
+
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2.5rem;
+  --space-xl: 4rem;
+  --space-2xl: 6.5rem;
+  --space-3xl: 9rem;
+
+  /* Container */
+  --container-max: 1400px;
+  --container-pad: clamp(1.25rem, 4vw, 3.5rem);
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-pill: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Shadows */
+  --shadow-subtle: 0 4px 20px rgba(11, 13, 18, 0.04);
+  --shadow-hover: 0 16px 36px rgba(23, 70, 255, 0.08);
+  --shadow-dark: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
