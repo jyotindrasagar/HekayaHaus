@@ -43,8 +43,9 @@ export const VideoModal: React.FC<VideoModalProps> = ({
           <iframe
             src={videoUrl}
             title="HekayaHaus Cinematic Showreel"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
+            sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
             className="video-iframe"
           />
         </div>

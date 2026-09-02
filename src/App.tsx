@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
+import { mountVercelToolbar } from '@vercel/toolbar';
+
 import { Header } from './components/common/Header';
 import { MobileMenu } from './components/common/MobileMenu';
 import { Footer } from './components/common/Footer';
@@ -34,8 +38,21 @@ function ScrollToTop() {
 export const App: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  useEffect(() => {
+    // Mount Vercel Toolbar in dev or when deployed on vercel.app
+    if (typeof window !== 'undefined') {
+      const isVercelHost = window.location.hostname.includes('vercel.app') || window.location.hostname.includes('localhost');
+      if (isVercelHost) {
+        mountVercelToolbar();
+      }
+    }
+  }, []);
+
   return (
     <SmoothScroll>
+      {/* Vercel Real User Experience & Telemetry */}
+      <Analytics />
+      <SpeedInsights />
       {/* Subtle Noise Texture Overlay */}
       <div className="noise-overlay" aria-hidden="true" />
 
