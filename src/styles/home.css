@@ -1217,3 +1217,24 @@ main > article {
 .not-found h1 {
   text-shadow: 0 2px 24px rgba(5, 11, 24, 0.55);
 }
+
+/* ================= Gallery drag ================= */
+@media (pointer: fine) {
+  .work-stage {
+    cursor: grab;
+  }
+  .work-stage.is-dragging {
+    cursor: grabbing;
+    user-select: none;
+  }
+  .work-stage.is-dragging a {
+    pointer-events: none;
+  }
+}
+.work-card img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+.work:not(.is-horizontal) .work-viewport {
+  scroll-snap-type: x proximity;
+}
