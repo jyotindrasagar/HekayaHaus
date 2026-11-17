@@ -57,50 +57,76 @@ export function Manifesto() {
 }
 
 /**
- * A photograph starts in a narrow vertical frame and opens to full-bleed while the visitor scrolls,
- * with the capability statement revealing over it. Pinned only on wide, motion-friendly screens.
+ * A photograph starts in a narrow vertical frame and opens to full-bleed as the visitor scrolls.
+ * Built on native `position: sticky` (no pinning) so it can never desync from the scroll position;
+ * a damped rAF loop maps scroll progress to the reveal for a smooth, continuous expansion.
  */
 export function ExpandingImage() {
-  const section = useRef<HTMLElement>(null);
+  const track = useRef<HTMLDivElement>(null);
+  const sticky = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const el = section.current;
-    if (!el) return;
-    const caps = getCapabilities();
-    if (caps.reducedMotion || window.innerWidth < 900) {
-      el.classList.add('expanded');
+    const tr = track.current;
+    const st = sticky.current;
+    if (!tr || !st) return;
+    if (getCapabilities().reducedMotion) {
+      st.style.setProperty('--p', '1');
       return;
     }
-    let cleanup = () => {};
-    import('../../lib/gsap').then(({ useGsap }) => {
-      const { gsap } = useGsap();
-      const frame = el.querySelector('.xp-frame');
-      const img = el.querySelector('.xp-frame img');
-      const copy = el.querySelector('.xp-copy');
-      const tl = gsap.timeline({
-        scrollTrigger: { trigger: el, start: 'top top', end: '+=140%', scrub: 1.2, pin: '.xp-pin', anticipatePin: 1 },
-        defaults: { ease: 'none' },
-      });
-      tl.fromTo(frame, { clipPath: 'inset(8% 38% 8% 38% round 2px)' }, { clipPath: 'inset(0% 0% 0% 0% round 0px)' }, 0)
-        .fromTo(img, { scale: 1.35 }, { scale: 1.02 }, 0)
-        .fromTo(copy, { opacity: 0, y: 60 }, { opacity: 1, y: 0 }, 0.45);
-      cleanup = () => {
-        tl.scrollTrigger?.kill();
-        tl.kill();
-      };
-    });
-    return () => cleanup();
+    let target = 0;
+    let current = -1;
+    let raf = 0;
+    const clamp = (v: number) => Math.min(1, Math.max(0, v));
+    const measure = () => {
+      const r = tr.getBoundingClientRect();
+      const range = r.height - window.innerHeight;
+      target = range > 0 ? clamp(-r.top / range) : 1;
+    };
+    const tick = () => {
+      raf = 0;
+      // Damped follow: smooth on wheel, trackpad and touch alike.
+      current = current < 0 ? target : current + (target - current) * 0.14;
+      if (Math.abs(target - current) < 0.0005) current = target;
+      st.style.setProperty('--p', current.toFixed(4));
+      if (current !== target) raf = requestAnimationFrame(tick);
+    };
+    const onScroll = () => {
+      measure();
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      cancelAnimationFrame(raf);
+    };
   }, []);
 
   return (
-    <section className="xp" ref={section} aria-labelledby="xp-title">
-      <div className="xp-pin">
-        <div className="xp-frame">
-          <Img name="auto-mercedes-dubai" sizes="100vw" />
-        </div>
-        <div className="xp-copy container">
-          <h2 id="xp-title" className="display-l">
-            Stories don’t just happen. <em>We create them.</em>
-          </h2>
+    <section className="xp" aria-labelledby="xp-title">
+      <div className="xp-track" ref={track}>
+        <div className="xp-sticky" ref={sticky}>
+          <div className="xp-intro container" aria-hidden="true">
+            <span className="eyebrow">Capabilities</span>
+            <p className="display-l">
+              Stories don’t
+              <br />
+              just happen.
+            </p>
+          </div>
+          <div className="xp-frame">
+            <Img name="auto-mercedes-dubai" sizes="(orientation: portrait) 160vh, 110vw" />
+          </div>
+          <div className="xp-copy container">
+            <h2 id="xp-title" className="display-l">
+              Stories don’t just happen. <em>We create them.</em>
+            </h2>
+          </div>
+          <div className="xp-hint" aria-hidden="true">
+            <span />
+          </div>
         </div>
       </div>
       <div className="xp-caps container">

@@ -390,8 +390,17 @@
   background: var(--navy);
   color: var(--white);
 }
-.xp-pin {
+.xp-track {
   position: relative;
+  height: 280vh;
+  background: var(--ivory);
+}
+.xp-sticky {
+  --p: 0;
+  /* eased progress for the frame (finishes at 80% of the scroll) */
+  --e: clamp(0, calc(var(--p) * 1.25), 1);
+  position: sticky;
+  top: 0;
   height: 100vh;
   height: 100svh;
   overflow: hidden;
@@ -401,24 +410,48 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  clip-path: inset(0 0 0 0);
+  clip-path: inset(
+    calc((1 - var(--e)) * 14%) calc((1 - var(--e)) * 33%) calc((1 - var(--e)) * 14%) calc((1 - var(--e)) * 33%)
+      round calc((1 - var(--e)) * 8px)
+  );
+  will-change: clip-path;
 }
 .xp-frame img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform-origin: 50% 50%;
+  transform: scale(calc(1.3 - var(--e) * 0.28));
+  will-change: transform;
 }
 .xp-frame::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(0deg, rgba(5, 11, 24, 0.82) 0%, rgba(5, 11, 24, 0.1) 55%, rgba(5, 11, 24, 0) 100%);
+  background: linear-gradient(0deg, #08152f 0%, rgba(8, 21, 47, 0.55) 22%, rgba(8, 21, 47, 0.08) 55%, rgba(8, 21, 47, 0) 100%);
+  opacity: calc(0.25 + var(--e) * 0.75);
+}
+/* Ink headline beside the narrow frame — the screen is never empty. */
+.xp-intro {
+  position: absolute;
+  inset: 0;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  pointer-events: none;
+  opacity: calc(1 - var(--e) * 2.2);
+  transform: translateX(calc(var(--e) * -60px));
+}
+.xp-intro .display-l {
+  max-width: 7.5em;
+  font-size: clamp(2.2rem, 1.4rem + 3vw, 4.6rem);
 }
 .xp-copy {
   position: absolute;
-  inset: auto 0 clamp(2rem, 7vh, 5rem) 0;
+  inset: auto 0 clamp(2.5rem, 9vh, 6rem) 0;
   z-index: 2;
+  opacity: clamp(0, calc((var(--p) - 0.55) * 4), 1);
+  transform: translateY(calc((1 - clamp(0, calc((var(--p) - 0.55) * 4), 1)) * 50px));
 }
 .xp-copy h2 {
   max-width: 14ch;
@@ -426,6 +459,22 @@
 }
 .xp-copy em {
   color: var(--blue-soft);
+}
+.xp-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 3.5vh;
+  width: 1px;
+  height: 48px;
+  background: var(--line);
+  overflow: hidden;
+  opacity: calc(1 - var(--e) * 3);
+}
+.xp-hint span {
+  position: absolute;
+  inset: 0;
+  background: var(--cobalt);
+  animation: scrollLine 2.2s var(--ease-io) infinite;
 }
 .xp-caps {
   padding-block: clamp(4rem, 7vw, 7rem);
@@ -460,8 +509,18 @@
   font-size: 0.95rem;
 }
 @media (max-width: 900px) {
-  .xp-pin {
-    height: 78svh;
+  .xp-track {
+    height: 220vh;
+  }
+  .xp-frame {
+    clip-path: inset(
+      calc((1 - var(--e)) * 30%) calc((1 - var(--e)) * 12%) calc((1 - var(--e)) * 8%) calc((1 - var(--e)) * 12%)
+        round calc((1 - var(--e)) * 8px)
+    );
+  }
+  .xp-intro {
+    justify-content: flex-start;
+    padding-top: calc(var(--header-h) + 2vh);
   }
   .xp-caps ul {
     grid-template-columns: 1fr;
