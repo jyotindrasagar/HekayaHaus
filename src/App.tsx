@@ -1,101 +1,76 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { lazy, useEffect } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
-import { mountVercelToolbar } from '@vercel/toolbar';
+import { Layout } from './components/layout/Layout';
+import HomePage from './pages/HomePage';
+import { SERVICE_PAGES } from './data/services';
 
-import { Header } from './components/common/Header';
-import { MobileMenu } from './components/common/MobileMenu';
-import { Footer } from './components/common/Footer';
-import { CustomCursor } from './components/common/CustomCursor';
-import { SmoothScroll } from './components/common/SmoothScroll';
+// Inner pages are code-split; the homepage ships in the main bundle for the fastest first paint.
+const ServicesHubPage = lazy(() => import('./pages/ServicesPages').then((m) => ({ default: m.ServicesHubPage })));
+const ServiceDetailPage = lazy(() => import('./pages/ServicesPages').then((m) => ({ default: m.ServiceDetailPage })));
+const MediaPillar = lazy(() => import('./pages/ServicesPages').then((m) => ({ default: () => <m.PillarPage id="media-production" /> })));
+const MarketingPillar = lazy(() => import('./pages/ServicesPages').then((m) => ({ default: () => <m.PillarPage id="marketing-branding" /> })));
+const TechPillar = lazy(() => import('./pages/ServicesPages').then((m) => ({ default: () => <m.PillarPage id="technology" /> })));
+const WorkIndexPage = lazy(() => import('./pages/WorkPages').then((m) => ({ default: m.WorkIndexPage })));
+const ProjectPage = lazy(() => import('./pages/WorkPages').then((m) => ({ default: m.ProjectPage })));
+const AboutPage = lazy(() => import('./pages/OtherPages').then((m) => ({ default: m.AboutPage })));
+const InsightsPage = lazy(() => import('./pages/OtherPages').then((m) => ({ default: m.InsightsPage })));
+const ContactPage = lazy(() => import('./pages/OtherPages').then((m) => ({ default: m.ContactPage })));
+const PrivacyPage = lazy(() => import('./pages/OtherPages').then((m) => ({ default: () => <m.LegalPage kind="privacy" /> })));
+const TermsPage = lazy(() => import('./pages/OtherPages').then((m) => ({ default: () => <m.LegalPage kind="terms" /> })));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
-import { HomePage } from './pages/HomePage';
-import { AllServicesPage } from './pages/AllServicesPage';
-import { ServiceDetailPage } from './pages/ServiceDetailPage';
-import { ContactPage } from './pages/ContactPage';
-import { BlogsPage } from './pages/BlogsPage';
-import { LegalPage } from './pages/LegalPage';
-import { NotFoundPage } from './pages/NotFoundPage';
+// Legacy / convenience URLs (also mirrored as real 301s in vercel.json).
+const REDIRECTS: Record<string, string> = {
+  '/services': '/allserviceshekayahaus',
+  '/what-we-do': '/allserviceshekayahaus',
+  '/contact': '/contact-us',
+  '/portfolio': '/work',
+  '/insights': '/blogs',
+  '/privacy': '/privacy-policy',
+  '/terms-and-conditions': '/terms',
+  '/industries': '/#industries',
+  '/why-us': '/#why-us',
+  '/process': '/#process',
+};
 
-function ScrollToTop() {
-  const { pathname, hash } = useLocation();
-
+export function App() {
   useEffect(() => {
-    if (!hash) {
-      window.scrollTo(0, 0);
-    } else {
-      const element = document.getElementById(hash.replace('#', ''));
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  }, [pathname, hash]);
-
-  return null;
-}
-
-export const App: React.FC = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    // Mount Vercel Toolbar in dev or when deployed on vercel.app
-    if (typeof window !== 'undefined') {
-      const isVercelHost = window.location.hostname.includes('vercel.app') || window.location.hostname.includes('localhost');
-      if (isVercelHost) {
-        mountVercelToolbar();
-      }
-    }
+    // Prefetch inner-page chunks when the browser is idle so navigation feels instant.
+    const idle = (window as Window & { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 2500));
+    idle(() => {
+      import('./pages/ServicesPages');
+      import('./pages/WorkPages');
+      import('./pages/OtherPages');
+    });
   }, []);
 
   return (
-    <SmoothScroll>
-      {/* Vercel Real User Experience & Telemetry */}
-      <Analytics />
-      <SpeedInsights />
-      {/* Subtle Noise Texture Overlay */}
-      <div className="noise-overlay" aria-hidden="true" />
-
-      {/* Desktop Cursor Enhancement */}
-      <CustomCursor />
-
-      {/* Scroll restoration */}
-      <ScrollToTop />
-
-      {/* Global Navigation Header */}
-      <Header onOpenMobileMenu={() => setIsMobileMenuOpen(true)} />
-
-      {/* Fullscreen Mobile Drawer */}
-      <MobileMenu
-        isOpen={isMobileMenuOpen}
-        onClose={() => setIsMobileMenuOpen(false)}
-      />
-
-      {/* Route Views */}
+    <Layout>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/allserviceshekayahaus" element={<AllServicesPage />} />
-        
-        {/* Dedicated Service Routes */}
-        <Route path="/media-production-dubai" element={<ServiceDetailPage />} />
-        <Route path="/content-marketing-dubai" element={<ServiceDetailPage />} />
-        <Route path="/graphics-dubai" element={<ServiceDetailPage />} />
-        <Route path="/event-organise-dubai" element={<ServiceDetailPage />} />
-        <Route path="/web-development-dubai" element={<ServiceDetailPage />} />
-        <Route path="/audio-direction-dubai" element={<ServiceDetailPage />} />
-
-        {/* Contact, Blogs & Legal */}
+        <Route path="/allserviceshekayahaus" element={<ServicesHubPage />} />
+        <Route path="/what-we-do/media-production" element={<MediaPillar />} />
+        <Route path="/what-we-do/marketing-branding" element={<MarketingPillar />} />
+        <Route path="/what-we-do/technology" element={<TechPillar />} />
+        {SERVICE_PAGES.map((s) => (
+          <Route key={s.slug} path={`/${s.slug}`} element={<ServiceDetailPage />} />
+        ))}
+        <Route path="/work" element={<WorkIndexPage />} />
+        <Route path="/work/:slug" element={<ProjectPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/blogs" element={<InsightsPage />} />
         <Route path="/contact-us" element={<ContactPage />} />
-        <Route path="/blogs" element={<BlogsPage />} />
-        <Route path="/privacy-policy" element={<LegalPage />} />
-        <Route path="/terms" element={<LegalPage />} />
-
-        {/* 404 & Legacy URL Migrations */}
+        <Route path="/privacy-policy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        {Object.entries(REDIRECTS).map(([from, to]) => (
+          <Route key={from} path={from} element={<Navigate to={to} replace />} />
+        ))}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-
-      {/* Global Minimal Footer */}
-      <Footer />
-    </SmoothScroll>
+      <Analytics />
+      <SpeedInsights />
+    </Layout>
   );
-};
+}

@@ -1,69 +1,43 @@
-import React, { useState } from 'react';
-import { HeroSection } from '../components/hero/HeroSection';
-import { BrandMarquee } from '../components/trust/BrandMarquee';
-import { AboutSection } from '../components/about/AboutSection';
-import { SolutionsSection } from '../components/solutions/SolutionsSection';
-import { FeaturedWork } from '../components/work/FeaturedWork';
-import { IndustriesIndex } from '../components/industries/IndustriesIndex';
-import { ProcessTimeline } from '../components/process/ProcessTimeline';
-import { MetricsSection } from '../components/proof/MetricsSection';
-import { WhyHekayaHaus } from '../components/why/WhyHekayaHaus';
-import { InsightsSection } from '../components/insights/InsightsSection';
-import { FAQAccordion } from '../components/common/FAQAccordion';
-import { FinalCTA } from '../components/cta/FinalCTA';
-import { ContactSection } from '../components/contact/ContactSection';
-import { VideoModal } from '../components/common/VideoModal';
-import { GENERAL_FAQS } from '../data/siteContent';
+import { Seo, faqSchema } from '../lib/seo';
+import { HOME_FAQS } from '../data/site';
+import { HeroSection } from '../components/home/HeroSection';
+import { ExpandingImage, Manifesto } from '../components/home/Manifesto';
+import { Showreel } from '../components/home/Showreel';
+import { ServicePillars } from '../components/home/ServicePillars';
+import { WorkGallery } from '../components/home/WorkGallery';
+import { IndustryExplorer } from '../components/home/IndustryExplorer';
+import { ProcessSection } from '../components/home/ProcessSection';
+import { FinalCTA, MetricsSection, Principles } from '../components/home/Sections';
+import { ContactSection } from '../components/home/ContactSection';
+import { FAQ } from '../components/ui/FAQ';
+import { Reveal, SplitText } from '../components/ui/Reveal';
 
-export const HomePage: React.FC = () => {
-  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
-
+export default function HomePage() {
   return (
-    <main className="homepage-main">
-      {/* 01. Hero Section */}
-      <HeroSection onWatchShowreel={() => setIsVideoModalOpen(true)} />
-
-      {/* 02. Client Trust Marquee */}
-      <BrandMarquee />
-
-      {/* 03. About Haus / Brand Philosophy */}
-      <AboutSection />
-
-      {/* 04. Solutions / What We Do (6 Parallel Pillars) */}
-      <SolutionsSection />
-
-      {/* 05. Featured Work (AccordionGallery in Cinematic Navy) */}
-      <FeaturedWork />
-
-      {/* 06. Industries We Work With */}
-      <IndustriesIndex />
-
-      {/* 07. Our Process (01 Discover -> 05 Scale) */}
-      <ProcessTimeline />
-
-      {/* 08. Results / Proven Performance Metrics */}
+    <>
+      <Seo jsonLd={faqSchema(HOME_FAQS)} />
+      <HeroSection />
+      <Manifesto />
+      <Showreel />
+      <ServicePillars />
+      <ExpandingImage />
+      <WorkGallery />
+      <IndustryExplorer />
+      <ProcessSection />
       <MetricsSection />
-
-      {/* 09. Why HekayaHaus Principles + Signature Quote */}
-      <WhyHekayaHaus />
-
-      {/* 10. Insights & Resources (3 Editorial Magazine Covers) */}
-      <InsightsSection />
-
-      {/* 11. Homepage FAQs */}
-      <FAQAccordion items={GENERAL_FAQS} />
-
-      {/* 12. Final Emotional CTA (Dark Cinematic Navy Portal) */}
-      <FinalCTA onWatchShowreel={() => setIsVideoModalOpen(true)} />
-
-      {/* 13. Direct Inquiry & Calendar Booking */}
+      <Principles />
+      <section className="section faq-section" aria-labelledby="faq-title">
+        <div className="container faq-grid">
+          <div>
+            <Reveal as="p" className="eyebrow">FAQ</Reveal>
+            <SplitText as="h2" text="Questions, answered." accent={['answered']} className="display-l" />
+            <span id="faq-title" className="sr-only">Frequently asked questions</span>
+          </div>
+          <FAQ items={HOME_FAQS} />
+        </div>
+      </section>
+      <FinalCTA />
       <ContactSection />
-
-      {/* Video Modal Player */}
-      <VideoModal
-        isOpen={isVideoModalOpen}
-        onClose={() => setIsVideoModalOpen(false)}
-      />
-    </main>
+    </>
   );
-};
+}

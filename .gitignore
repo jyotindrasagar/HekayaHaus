@@ -33,3 +33,6 @@ lerna-debug.log*
 
 # Persistent project documentation (requested by user to be gitignored)
 PROJECT_REBUILD_LOG.md
+
+# Local tooling
+.claude/

@@ -2,32 +2,36 @@
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/services", "destination": "/allserviceshekayahaus", "permanent": true },
+    { "source": "/what-we-do", "destination": "/allserviceshekayahaus", "permanent": true },
+    { "source": "/contact", "destination": "/contact-us", "permanent": true },
+    { "source": "/portfolio", "destination": "/work", "permanent": true },
+    { "source": "/insights", "destination": "/blogs", "permanent": true },
+    { "source": "/privacy", "destination": "/privacy-policy", "permanent": true },
+    { "source": "/terms-and-conditions", "destination": "/terms", "permanent": true }
   ],
+  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
   "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/media/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }]
+    },
     {
       "source": "/(.*)",
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: https://va.vercel-scripts.com https://vitals.vercel-insights.com https://vercel.live; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; font-src 'self' https: data:; frame-src 'self' https: https://www.youtube.com https://www.youtube-nocookie.com https://vercel.live; connect-src 'self' https: wss: https://va.vercel-scripts.com https://vitals.vercel-insights.com https://vercel.live; frame-ancestors 'self' https://vercel.live https://*.vercel.app https://*.vercel.com; object-src 'none';"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com https://vercel.live; style-src 'self' 'unsafe-inline' https://vercel.live; img-src 'self' data: blob: https:; font-src 'self' data: https://vercel.live; media-src 'self' https:; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com https://vercel.live; connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://vercel.live wss://ws-us3.pusher.com; worker-src 'self' blob:; frame-ancestors 'self' https://vercel.live; object-src 'none'; base-uri 'self'; form-action 'self' mailto:"
         },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        },
-        {
-          "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=()"
-        }
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
       ]
     }
   ]
