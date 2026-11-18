@@ -86,9 +86,9 @@ export function ContactForm({ compact }: { compact?: boolean }) {
   if (status === 'sent') {
     return (
       <div className="form-done" ref={statusRef} tabIndex={-1} role="status">
-        <p className="eyebrow">Inquiry received</p>
-        <h3 className="display-m">Thank you — your story starts here.</h3>
-        <p>Our team will reply by email shortly. Prefer to talk now? Pick a time that suits you.</p>
+        <p className="eyebrow">Message received</p>
+        <h3 className="display-m">Thank you for reaching out.</h3>
+        <p>Your story has reached the right place. Someone from our team will be in touch shortly.</p>
         <Button href={SITE.calendar} external>Book a discovery call</Button>
       </div>
     );
@@ -138,10 +138,10 @@ export function ContactForm({ compact }: { compact?: boolean }) {
       </div>
       <div className="form-actions">
         <Button type="submit" disabled={status === 'sending'}>
-          {status === 'sending' ? 'Sending…' : 'Send inquiry'}
+          {status === 'sending' ? 'Sending…' : 'Start the conversation'}
         </Button>
         <p className="form-note">
-          Or <a href={SITE.calendar} target="_blank" rel="noopener noreferrer">book a call directly</a>. We only use your details to reply.
+          Your information stays with our team. We’ll review your enquiry and get back to you.
         </p>
       </div>
       <div ref={statusRef} tabIndex={-1} aria-live="polite" className="form-status">

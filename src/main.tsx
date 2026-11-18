@@ -9,6 +9,7 @@ import './styles/base.css';
 import './styles/components.css';
 import './styles/home.css';
 import './styles/pages.css';
+import './styles/v2.css';
 import { App } from './App';
 
 document.documentElement.classList.add('js');

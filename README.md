@@ -31,6 +31,9 @@ Set **one** of these in Vercel → Project → Settings → Environment Variable
 | `RESEND_API_KEY` | Email delivery via Resend. Optional `CONTACT_FROM_EMAIL` (verified sender), `CONTACT_TO_EMAIL` (default `info@hekayahaus.com`). |
 | `CONTACT_WEBHOOK_URL` | POST each inquiry as JSON to Zapier / Make / n8n / a CRM. |
 
+The careers form posts to `api/apply.ts` (CV + portfolio attachments, ≤3.5 MB total) → `RESEND_API_KEY` (to
+`CAREERS_TO_EMAIL`, default hr@hekayahaus.com) or `CONTACT_WEBHOOK_URL` (JSON incl. base64 attachments).
+
 Until one is set, the form validates, then tells the visitor it couldn't send and offers a one-click pre-filled email
 to info@hekayahaus.com — it never fakes a success. Spam protection: honeypot, minimum fill time, per-IP rate limit.
 

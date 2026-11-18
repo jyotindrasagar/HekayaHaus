@@ -14,7 +14,12 @@
 ## Content integrity
 - Business facts come from `CONTEXT.md`, `PAGES_AND_CONTENT.md`, `CONTACT_AND_SOCIALS.md`, `ASSETS_AND_MEDIA.md`.
 - Do not invent clients, metrics, testimonials, awards, articles, phone numbers or case-study results.
-- Verified metrics: 280% video engagement, 95% client satisfaction, 5K+ projects, "Trusted by 5.3k+".
+- Verified metrics: 200+ brands/clients (owner-confirmed), 280% video engagement, 95% client satisfaction, 5K+ projects.
+- Contact: info@hekayahaus.com · WhatsApp +971 55 248 9492 · careers hr@hekayahaus.com (owner-supplied).
+- Structure (owner brief): three pillars Marketing / Performance / Growth (`src/data/services.ts`); nav = Portfolio,
+  What We Do, About, Contact, Join the Haus (Careers, University Partnerships, Mentorship & Collaborations); Insights
+  lives in the footer; no Industries section. Press items in `FEATURES` (`src/data/site.ts`) — add links only when confirmed.
+- Case studies (`src/data/work.ts`): Brief/Challenge/Thinking/Execution/Outcome render only when real data is filled in.
 
 ## Images
 - Source archive: `public/assets/`. Run `python scripts/optimize_media.py` to regenerate responsive WebP in

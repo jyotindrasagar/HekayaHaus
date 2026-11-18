@@ -2,8 +2,23 @@
 // Descriptions describe what the work shows; no clients, results or metrics are claimed beyond what the
 // imagery itself displays. Add verified client names / results here when they are approved.
 import type { MediaName } from './media.generated';
+import type { PillarId } from './services';
+import type { ExternalVideo } from './videos';
 
+/**
+ * Case-study sections (brief/challenge/thinking/execution/outcome) are optional and only render when filled in
+ * with real, project-specific information. Never manufacture results or attribute achievements without evidence.
+ */
 export interface Project {
+  pillar: PillarId;
+  client?: string;
+  brief?: string;
+  challenge?: string;
+  thinking?: string;
+  execution?: string;
+  outcome?: string;
+  /** Externally hosted film for this project (never a local file). */
+  video?: ExternalVideo;
   slug: string;
   title: string;
   category: string;
@@ -19,6 +34,7 @@ export interface Project {
 export const PROJECTS: Project[] = [
   {
     slug: 'automotive-films',
+    pillar: 'performance',
     title: 'Automotive in Motion',
     category: 'Automotive',
     discipline: 'Commercial film & photography',
@@ -31,11 +47,12 @@ export const PROJECTS: Project[] = [
     gallery: ['auto-mercedes-dubai-2', 'auto-bmw-x6', 'auto-cockpit'],
     services: [
       { label: 'Media Production', to: '/media-production-dubai' },
-      { label: 'Media Production & Creative', to: '/what-we-do/media-production' },
+      { label: 'Performance', to: '/what-we-do/performance' },
     ],
   },
   {
     slug: 'motorsport-key-art',
+    pillar: 'marketing',
     title: 'Motorsport Key Art',
     category: 'Sports & Motorsport',
     discipline: 'Key art & graphic design',
@@ -47,12 +64,13 @@ export const PROJECTS: Project[] = [
     cover: 'poster-f1-verstappen',
     gallery: ['poster-f1-hamilton', 'poster-mustang'],
     services: [
-      { label: 'Graphics, Branding & CGI', to: '/graphics-dubai' },
-      { label: 'Marketing, Branding & Growth', to: '/what-we-do/marketing-branding' },
+      { label: 'Graphic Design & Branding', to: '/graphics-dubai' },
+      { label: 'Marketing', to: '/what-we-do/marketing' },
     ],
   },
   {
     slug: 'film-key-art',
+    pillar: 'marketing',
     title: 'Film & Music Key Art',
     category: 'Entertainment',
     discipline: 'Theatrical key art',
@@ -63,12 +81,13 @@ export const PROJECTS: Project[] = [
     cover: 'poster-teaser',
     gallery: ['poster-lyrical', 'poster-campus-map'],
     services: [
-      { label: 'Graphics, Branding & CGI', to: '/graphics-dubai' },
+      { label: 'Graphic Design & Branding', to: '/graphics-dubai' },
       { label: 'Audio Production', to: '/audio-direction-dubai' },
     ],
   },
   {
     slug: 'cinematic-portraiture',
+    pillar: 'performance',
     title: 'Cinematic Portraiture',
     category: 'Fashion & Beauty',
     discipline: 'Photography & art direction',
@@ -80,11 +99,12 @@ export const PROJECTS: Project[] = [
     gallery: ['portrait-neon', 'event-neon-arcade'],
     services: [
       { label: 'Media Production', to: '/media-production-dubai' },
-      { label: 'Content & Marketing', to: '/content-marketing-dubai' },
+      { label: 'Social Media Marketing', to: '/content-marketing-dubai' },
     ],
   },
   {
     slug: 'kofo-brand-identity',
+    pillar: 'marketing',
     title: 'Kofo',
     category: 'Brand Identity',
     discipline: 'Identity & print',
@@ -95,12 +115,13 @@ export const PROJECTS: Project[] = [
     cover: 'brand-kofo',
     gallery: ['design-grid'],
     services: [
-      { label: 'Graphics, Branding & CGI', to: '/graphics-dubai' },
-      { label: 'Marketing, Branding & Growth', to: '/what-we-do/marketing-branding' },
+      { label: 'Graphic Design & Branding', to: '/graphics-dubai' },
+      { label: 'Marketing', to: '/what-we-do/marketing' },
     ],
   },
   {
     slug: 'events-and-experiences',
+    pillar: 'performance',
     title: 'Events & Experiences',
     category: 'Events',
     discipline: 'Event styling, production & coverage',
@@ -111,12 +132,13 @@ export const PROJECTS: Project[] = [
     cover: 'events-decor',
     gallery: ['film-set-clapper', 'event-neon-arcade'],
     services: [
-      { label: 'Event Organising', to: '/event-organise-dubai' },
+      { label: 'Events & Activations', to: '/event-organise-dubai' },
       { label: 'Media Production', to: '/media-production-dubai' },
     ],
   },
   {
     slug: 'hospitality-fnb',
+    pillar: 'performance',
     title: 'Hospitality & F&B',
     category: 'Hospitality',
     discipline: 'Lifestyle photography',
@@ -128,11 +150,12 @@ export const PROJECTS: Project[] = [
     gallery: ['portrait-neon'],
     services: [
       { label: 'Media Production', to: '/media-production-dubai' },
-      { label: 'Content & Marketing', to: '/content-marketing-dubai' },
+      { label: 'Social Media Marketing', to: '/content-marketing-dubai' },
     ],
   },
   {
     slug: 'digital-products',
+    pillar: 'growth',
     title: 'Digital Products',
     category: 'Technology',
     discipline: 'Web design & development',
@@ -143,12 +166,13 @@ export const PROJECTS: Project[] = [
     cover: 'web-editorial',
     gallery: ['web-landing', 'web-portfolio', 'web-wireframes', 'tech-isometric-1', 'tech-isometric-2'],
     services: [
-      { label: 'Web, App, CRM & AI', to: '/web-development-dubai' },
-      { label: 'Technology & Digital Experiences', to: '/what-we-do/technology' },
+      { label: 'Web, CRM, Software & AI', to: '/web-development-dubai' },
+      { label: 'Growth', to: '/what-we-do/growth' },
     ],
   },
   {
     slug: 'social-content',
+    pillar: 'marketing',
     title: 'Social & Campaign Content',
     category: 'Marketing',
     discipline: 'Social content & design',
@@ -159,8 +183,8 @@ export const PROJECTS: Project[] = [
     cover: 'social-campaign',
     gallery: ['design-grid', 'poster-f1-hamilton'],
     services: [
-      { label: 'Content & Marketing', to: '/content-marketing-dubai' },
-      { label: 'Marketing, Branding & Growth', to: '/what-we-do/marketing-branding' },
+      { label: 'Social Media Marketing', to: '/content-marketing-dubai' },
+      { label: 'Marketing', to: '/what-we-do/marketing' },
     ],
   },
 ];

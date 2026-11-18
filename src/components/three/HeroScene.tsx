@@ -53,7 +53,7 @@ interface SliceDef {
   z: number;
 }
 
-function Slices({ texture, tier, onFirstFrame }: { texture: THREE.Texture; tier: SceneProps['tier']; onFirstFrame: () => void }) {
+function Slices({ texture, tier, onFirstFrame, startDelay = 0 }: { texture: THREE.Texture; tier: SceneProps['tier']; onFirstFrame: () => void; startDelay?: number }) {
   const group = useRef<THREE.Group>(null);
   const pointer = useRef(new THREE.Vector2());
   const smooth = useRef(new THREE.Vector2());
@@ -136,7 +136,7 @@ function Slices({ texture, tier, onFirstFrame }: { texture: THREE.Texture; tier:
       group.current.position.x = p.x * 0.08;
     }
     materials.forEach((m, i) => {
-      const local = Math.min(1, Math.max(0, (t - 0.15 - i * 0.12) / 1.3));
+      const local = Math.min(1, Math.max(0, (t - 0.15 - startDelay - i * 0.12) / 1.3));
       m.uniforms.uReveal.value = 1 - Math.pow(1 - local, 4);
       m.uniforms.uTime.value = t;
       m.uniforms.uPointer.value.copy(p);
@@ -257,7 +257,7 @@ function Loader({ src, children, onError }: { src: string; children: (t: THREE.T
   return tex ? <>{children(tex)}</> : null;
 }
 
-export default function HeroScene({ active, onReady, onFail, dpr, tier, src }: SceneProps & { src: string }) {
+export default function HeroScene({ active, onReady, onFail, dpr, tier, src, startDelay = 0 }: SceneProps & { src: string; startDelay?: number }) {
   const dust = tier === 'high' ? 700 : tier === 'balanced' ? 360 : 140;
   return (
     <Canvas
@@ -272,7 +272,7 @@ export default function HeroScene({ active, onReady, onFail, dpr, tier, src }: S
         });
       }}
     >
-      <Loader src={src} onError={onFail}>{(tex) => <Slices texture={tex} tier={tier} onFirstFrame={onReady} />}</Loader>
+      <Loader src={src} onError={onFail}>{(tex) => <Slices texture={tex} tier={tier} onFirstFrame={onReady} startDelay={startDelay} />}</Loader>
       {tier !== 'low' && <Frame />}
       <Dust count={dust} />
       <AdaptiveDpr max={dpr[1]} />

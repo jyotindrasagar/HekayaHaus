@@ -1,14 +1,61 @@
 import { useEffect, useRef, useState } from 'react';
-import { SITE, TRUSTED_BY } from '../../data/site';
+import { createPortal } from 'react-dom';
+import { CLIENTS, SITE } from '../../data/site';
 import { VIDEOS } from '../../data/videos';
 import { Button, PlayIcon } from '../ui/Buttons';
 import { SplitText } from '../ui/Reveal';
 import { Img, srcFor } from '../ui/Img';
 import { Theatre } from '../ui/VideoPlayer';
 import { InteractiveCanvas } from '../three/InteractiveCanvas';
-import { BrandMarquee } from './BrandMarquee';
+import { LogoMark } from '../layout/SiteHeader';
 
 const loadHero = () => import('../three/HeroScene');
+const INTRO_KEY = 'hh-intro-seen';
+
+function shouldPlayIntro() {
+  if (typeof window === 'undefined') return false;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+  try {
+    return !sessionStorage.getItem(INTRO_KEY);
+  } catch {
+    return false;
+  }
+}
+
+/** First-load sequence: HEKAYAHAUS alone, strong and clean — then the page opens. ~1.9s, once per visit. */
+function IntroSequence({ onDone }: { onDone: () => void }) {
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(INTRO_KEY, '1');
+    } catch {
+      /* private mode */
+    }
+    document.documentElement.classList.add('no-scroll');
+    const t = window.setTimeout(() => {
+      document.documentElement.classList.remove('no-scroll');
+      onDone();
+    }, 2100);
+    return () => {
+      clearTimeout(t);
+      document.documentElement.classList.remove('no-scroll');
+    };
+  }, [onDone]);
+  return createPortal(
+    <div className="intro" aria-hidden="true" onClick={onDone}>
+      <div className="intro-inner">
+        <LogoMark className="intro-mark" />
+        <p className="intro-word">
+          {'HEKAYAHAUS'.split('').map((c, i) => (
+            <span key={i} style={{ '--i': i } as React.CSSProperties}>
+              {c}
+            </span>
+          ))}
+        </p>
+      </div>
+    </div>,
+    document.body,
+  );
+}
 
 /** CSS-only sliced portrait: the LCP image and the fallback for every device without WebGL. */
 function SlicedPortrait() {
@@ -25,16 +72,7 @@ function SlicedPortrait() {
         <div
           key={i}
           className="slice"
-          style={
-            {
-              left: `${s.x}%`,
-              width: `${s.w}%`,
-              top: `${s.y}%`,
-              height: `${s.h}%`,
-              '--depth': s.d,
-              '--i': i,
-            } as React.CSSProperties
-          }
+          style={{ left: `${s.x}%`, width: `${s.w}%`, top: `${s.y}%`, height: `${s.h}%`, '--depth': s.d, '--i': i } as React.CSSProperties}
         >
           <div className="slice-img" style={{ width: `${10000 / s.w}%`, height: `${10000 / s.h}%`, left: `${(-s.x * 100) / s.w}%`, top: `${(-s.y * 100) / s.h}%` }}>
             <Img name="portrait-lightbulb-duo" sizes="(min-width: 1024px) 50vw, 100vw" priority={i === 2} decorative />
@@ -48,8 +86,11 @@ function SlicedPortrait() {
 export function HeroSection() {
   const ref = useRef<HTMLElement>(null);
   const [reel, setReel] = useState(false);
+  const [intro, setIntro] = useState(shouldPlayIntro);
+  const [playedIntro] = useState(intro);
+  // When the intro plays, hold the hero's own reveal until the curtain lifts.
+  const base = playedIntro ? 1650 : 100;
 
-  // Pointer depth for the CSS composition (the WebGL scene tracks the pointer itself).
   useEffect(() => {
     const el = ref.current;
     if (!el || window.matchMedia('(pointer: coarse), (prefers-reduced-motion: reduce)').matches) return;
@@ -74,66 +115,71 @@ export function HeroSection() {
     };
   }, []);
 
+  const d = (ms: number) => ({ '--d': `${base + ms}ms` }) as React.CSSProperties;
+
   return (
-    <section className="hero" ref={ref} aria-labelledby="hero-title">
+    <section className={`hero ${playedIntro ? 'hero-after-intro' : ''}`} ref={ref} aria-labelledby="hero-title">
+      {intro && <IntroSequence onDone={() => setIntro(false)} />}
       <div className="hero-grid container">
         <div className="hero-copy">
-          <p className="eyebrow hero-in" style={{ '--d': '0ms' } as React.CSSProperties}>
-            {SITE.positioning} · Dubai
+          <p className="eyebrow hero-in" style={d(0)}>
+            {SITE.positioning} • {SITE.region}
           </p>
+          <span id="hero-title" className="sr-only">HekayaHaus — Beyond seen. Into felt.</span>
           <SplitText
             as="h1"
             text={'Beyond seen.\nInto felt.'}
             accent={['Into', 'felt']}
             className="hero-title"
             immediate
-            delay={120}
+            delay={base + 80}
             stagger={90}
           />
-          <span id="hero-title" className="sr-only">HekayaHaus — Beyond seen. Into felt.</span>
-          <p className="hero-lead hero-in" style={{ '--d': '520ms' } as React.CSSProperties}>
-            Your brand story, told through cinematic production, strategic marketing and technology —
-            under one roof.
+          <p className="hero-lead hero-in" style={d(480)}>
+            Your business deserves to be seen for what it can become.
           </p>
-          <p className="hero-sub hero-in" style={{ '--d': '620ms' } as React.CSSProperties}>
-            {SITE.manifesto}
-          </p>
-          <div className="hero-actions hero-in" style={{ '--d': '720ms' } as React.CSSProperties}>
+          <div className="hero-logos hero-in" style={d(580)} aria-label={`Trusted by brands including ${CLIENTS.map((c) => c.name).join(', ')}`}>
+            <div className="hero-logos-track">
+              {[0, 1].map((k) => (
+                <ul key={k} aria-hidden={k === 1 || undefined}>
+                  {CLIENTS.map((c) => (
+                    <li key={c.name}>
+                      <img src={c.logo} alt={k ? '' : c.name} width={c.w} height={c.h} loading="eager" decoding="async" />
+                    </li>
+                  ))}
+                </ul>
+              ))}
+            </div>
+          </div>
+          <div className="hero-actions hero-in" style={d(680)}>
             <Button href={SITE.calendar} external>
               Book a discovery call
             </Button>
-            <button type="button" className="reel-link" onClick={() => setReel(true)}>
+            <button type="button" className="reel-link" onClick={() => setReel(true)} data-cursor="Play">
               <span>Watch showreel</span>
               <span className="reel-disc">
                 <PlayIcon />
               </span>
             </button>
           </div>
+          <p className="hero-note hero-in" style={d(780)}>
+            Built through collaborations with <strong>200+ clients and brands</strong> across industries, markets and ambitions.
+          </p>
         </div>
 
-        <div className="hero-visual hero-in" style={{ '--d': '0ms' } as React.CSSProperties}>
-          <InteractiveCanvas
-            load={loadHero}
-            eager
-            className="hero-canvas"
-            sceneProps={{ src: srcFor('portrait-lightbulb-duo', 1440) }}
-            fallback={<SlicedPortrait />}
-          />
+        <div className="hero-visual hero-in" style={d(0)}>
+          <InteractiveCanvas load={loadHero} eager className="hero-canvas" sceneProps={{ src: srcFor('portrait-lightbulb-duo', 1440), startDelay: playedIntro ? 1.6 : 0 }} fallback={<SlicedPortrait />} />
           <p className="hero-scroll" aria-hidden="true">
             <span>Scroll to explore</span>
             <span className="hero-scroll-line" />
           </p>
           <div className="hero-trusted">
-            <strong>{TRUSTED_BY}</strong>
-            <span>Trusted by</span>
+            <strong>200+</strong>
+            <span>Brands trust the Haus</span>
           </div>
         </div>
       </div>
-      <BrandMarquee />
       {reel && <Theatre video={VIDEOS.showreel} onClose={() => setReel(false)} />}
-      <noscript>
-        <Img name="portrait-lightbulb-duo" />
-      </noscript>
     </section>
   );
 }

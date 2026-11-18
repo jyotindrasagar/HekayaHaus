@@ -4,6 +4,7 @@ import { SiteHeader } from './SiteHeader';
 import { SiteFooter } from './SiteFooter';
 import { SmoothScroll, scrollToTarget } from './SmoothScroll';
 import { ScrollFX } from './ScrollFX';
+import { InteractionFX } from './InteractionFX';
 
 function ScrollProgress() {
   const bar = useRef<HTMLDivElement>(null);
@@ -78,6 +79,7 @@ export function Layout({ children }: { children: ReactNode }) {
       </main>
       <SiteFooter />
       <ScrollFX />
+      <InteractionFX />
     </>
   );
 }

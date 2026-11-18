@@ -188,18 +188,18 @@ export function WorkGallery() {
       <div className="work-head container">
         <div>
           <Reveal as="p" className="eyebrow eyebrow-light">Featured work</Reveal>
-          <SplitText as="h2" text="Work that is felt." accent={['felt']} className="display-l" />
+          <SplitText as="h2" text="Don’t take our word for it. Look closer." accent={['Look', 'closer']} className="display-l" />
         </div>
         <div className="work-head-side">
-          <Reveal as="p">Film, photography, key art, identity and digital — a selection from the Haus.</Reveal>
-          <Button to="/work" variant="outline-light">All work</Button>
+          <Reveal as="p">Different challenges. Different ambitions. Different industries. Every project begins with understanding what needs to change — and ends with something built to make a difference.</Reveal>
+          <Button to="/portfolio" variant="outline-light">Explore our portfolio</Button>
         </div>
       </div>
       <div className="work-viewport" ref={viewport}>
         <ul className="work-track" ref={track}>
           {projects.map((p, i) => (
-            <li key={p.slug} className="work-card">
-              <Link to={`/work/${p.slug}`}>
+            <li key={p.slug} className="work-card" data-cursor="Drag">
+              <Link to={`/portfolio/${p.slug}`}>
                 <div className="work-card-media">
                   <Img name={p.cover} sizes="(min-width: 1024px) 46vw, 82vw" />
                 </div>
@@ -217,7 +217,7 @@ export function WorkGallery() {
             </li>
           ))}
           <li className="work-card work-card-end">
-            <Link to="/work">
+            <Link to="/portfolio">
               <span className="display-m">See all work</span>
               <ArrowIcon />
             </Link>

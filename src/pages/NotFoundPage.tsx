@@ -17,7 +17,7 @@ export default function NotFoundPage() {
           <p>The page you’re looking for has moved or never existed.</p>
           <div className="not-found-actions">
             <Button to="/" variant="light">Back to home</Button>
-            <Link to="/work" className="text-link light"><span>See the work</span></Link>
+            <Link to="/portfolio" className="text-link light"><span>See the portfolio</span></Link>
           </div>
         </div>
       </section>

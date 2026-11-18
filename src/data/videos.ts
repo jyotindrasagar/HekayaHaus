@@ -1,5 +1,6 @@
 // Videos are NEVER stored in this repo (see CLAUDE.md). They stream from an external host at full quality.
-// Add a provider here to switch hosts (e.g. Vimeo, Mux, Cloudflare Stream) without touching components.
+// To swap a reel: change `ref` (YouTube/Vimeo id) or use provider 'iframe' with any embeddable URL.
+// Planned: one combined new showreel + one reel per service — add them here and reference by key.
 import type { MediaName } from './media.generated';
 
 export type VideoProvider = 'youtube' | 'vimeo' | 'iframe';
@@ -16,9 +17,19 @@ export interface ExternalVideo {
 }
 
 export const VIDEOS = {
+  /** Main brand reel (homepage). */
   showreel: {
     id: 'showreel',
-    title: 'HekayaHaus Showreel',
+    title: 'HEKAYA HAUS — Beyond Seen, Into Felt | Full Creative Showreel',
+    provider: 'youtube',
+    ref: 'NdCEVQGzkfI',
+    poster: 'showreel-poster',
+    watchUrl: 'https://youtu.be/NdCEVQGzkfI',
+  },
+  /** Media & production reel (Performance pillar / media production page). */
+  productionReel: {
+    id: 'production-reel',
+    title: 'HEKAYA HAUS — Media & Production | Full Creative Showreel',
     provider: 'youtube',
     ref: '2_CSwS6nG6o',
     poster: 'showreel-poster',

@@ -1,14 +1,12 @@
 import { Seo, faqSchema } from '../lib/seo';
 import { HOME_FAQS } from '../data/site';
 import { HeroSection } from '../components/home/HeroSection';
-import { ExpandingImage, Manifesto } from '../components/home/Manifesto';
+import { ExpandingImage, Manifesto, StoryStatement } from '../components/home/Manifesto';
 import { Showreel } from '../components/home/Showreel';
 import { ServicePillars } from '../components/home/ServicePillars';
 import { WorkGallery } from '../components/home/WorkGallery';
-import { IndustryExplorer } from '../components/home/IndustryExplorer';
 import { ProcessSection } from '../components/home/ProcessSection';
-import { FinalCTA, MetricsSection, Principles } from '../components/home/Sections';
-import { ContactSection } from '../components/home/ContactSection';
+import { FeaturedIn, FinalCTA, MetricsSection, Principles } from '../components/home/Sections';
 import { FAQ } from '../components/ui/FAQ';
 import { Reveal, SplitText } from '../components/ui/Reveal';
 
@@ -17,12 +15,13 @@ export default function HomePage() {
     <>
       <Seo jsonLd={faqSchema(HOME_FAQS)} />
       <HeroSection />
+      <StoryStatement />
+      <FeaturedIn />
       <Manifesto />
       <Showreel />
       <ServicePillars />
       <ExpandingImage />
       <WorkGallery />
-      <IndustryExplorer />
       <ProcessSection />
       <MetricsSection />
       <Principles />
@@ -37,7 +36,6 @@ export default function HomePage() {
         </div>
       </section>
       <FinalCTA />
-      <ContactSection />
     </>
   );
 }

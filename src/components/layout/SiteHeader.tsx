@@ -5,72 +5,121 @@ import { PILLARS } from '../../data/services';
 import { ArrowIcon } from '../ui/Buttons';
 import { MobileNavigation } from './MobileNavigation';
 
-export const NAV = [
-  { label: 'Work', to: '/work' },
-  { label: 'What We Do', to: '/allserviceshekayahaus', mega: true },
-  { label: 'Industries', to: '/#industries' },
-  { label: 'About', to: '/about' },
-  { label: 'Insights', to: '/blogs' },
-  { label: 'Contact', to: '/contact-us' },
+export const JOIN_LINKS = [
+  { label: 'Careers — Join the Haus', short: 'Careers', to: '/careers', desc: 'Roles, internships and freelance collaborations.' },
+  { label: 'University Partnerships', short: 'University Partnerships', to: '/university-partnerships', desc: 'Placements, industry projects and student opportunities.' },
+  { label: 'Mentorship & Collaborations', short: 'Mentorship & Collaborations', to: '/mentorship-collaborations', desc: 'Alumni, entrepreneurship and features beyond business.' },
 ];
 
-export function Wordmark({ light }: { light?: boolean }) {
+export const NAV: { label: string; to: string; menu?: 'pillars' | 'join' }[] = [
+  { label: 'Portfolio', to: '/portfolio' },
+  { label: 'What We Do', to: '/allserviceshekayahaus', menu: 'pillars' },
+  { label: 'About', to: '/about' },
+  { label: 'Contact', to: '/contact-us' },
+  { label: 'Join the Haus', to: '/careers', menu: 'join' },
+];
+
+/** The HekayaHaus H mark (from the brand logo file), coloured with currentColor via CSS mask. */
+export function LogoMark({ className = '' }: { className?: string }) {
+  return <span className={`logo-mark ${className}`} aria-hidden="true" />;
+}
+
+export function Wordmark({ light, tag = true }: { light?: boolean; tag?: boolean }) {
   return (
     <span className={`wordmark ${light ? 'wordmark-light' : ''}`}>
-      <span className="wordmark-name">
-        HEKAYA<span>HAUS</span>
+      <LogoMark />
+      <span className="wordmark-text">
+        <span className="wordmark-name">HEKAYAHAUS</span>
+        {tag && <span className="wordmark-tag">Beyond seen. Into felt.</span>}
       </span>
-      <span className="wordmark-tag">Beyond seen. Into felt.</span>
     </span>
   );
 }
 
-export function SiteHeader() {
-  const [hidden, setHidden] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [megaOpen, setMegaOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const { pathname } = useLocation();
-  const last = useRef(0);
-  const megaRef = useRef<HTMLLIElement>(null);
-
+function Dropdown({ item, open, setOpen }: { item: (typeof NAV)[number]; open: boolean; setOpen: (v: boolean) => void }) {
+  const ref = useRef<HTMLLIElement>(null);
   useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY;
-      setScrolled(y > 24);
-      setHidden(y > 400 && y > last.current + 4 && !megaOpen);
-      if (y < last.current - 4) setHidden(false);
-      last.current = y;
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [megaOpen]);
-
-  useEffect(() => {
-    setMegaOpen(false);
-    setMenuOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
-    if (!megaOpen) return;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setMegaOpen(false);
-    const onClick = (e: MouseEvent) => {
-      if (megaRef.current && !megaRef.current.contains(e.target as Node)) setMegaOpen(false);
-    };
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    const onClick = (e: MouseEvent) => ref.current && !ref.current.contains(e.target as Node) && setOpen(false);
     document.addEventListener('keydown', onKey);
     document.addEventListener('click', onClick);
     return () => {
       document.removeEventListener('keydown', onKey);
       document.removeEventListener('click', onClick);
     };
-  }, [megaOpen]);
+  }, [open, setOpen]);
+  const hover = () => window.matchMedia('(hover: hover)').matches;
+  const id = `menu-${item.menu}`;
+  return (
+    <li ref={ref} className="has-mega" onMouseEnter={() => hover() && setOpen(true)} onMouseLeave={() => hover() && setOpen(false)}>
+      <button type="button" className="nav-link" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}>
+        {item.label}
+        <span className="nav-caret" aria-hidden="true" />
+      </button>
+      <div id={id} className="mega" hidden={!open}>
+        <div className={`mega-inner ${item.menu === 'join' ? 'mega-join' : ''}`}>
+          {item.menu === 'pillars'
+            ? PILLARS.map((p) => (
+                <Link key={p.id} to={p.route} className="mega-pillar" data-cursor="Explore">
+                  <span className="mega-n">{p.n}</span>
+                  <span className="mega-title">{p.name}</span>
+                  <span className="mega-desc">{p.line}</span>
+                  <span className="mega-go">
+                    {p.cta} <ArrowIcon />
+                  </span>
+                </Link>
+              ))
+            : JOIN_LINKS.map((j, i) => (
+                <Link key={j.to} to={j.to} className="mega-pillar" data-cursor="Open">
+                  <span className="mega-n">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="mega-title">{j.label}</span>
+                  <span className="mega-desc">{j.desc}</span>
+                  <span className="mega-go">
+                    Open <ArrowIcon />
+                  </span>
+                </Link>
+              ))}
+          <Link to={item.to} className="mega-all">
+            {item.menu === 'pillars' ? 'All capabilities' : 'Join the Haus'} <ArrowIcon />
+          </Link>
+        </div>
+      </div>
+    </li>
+  );
+}
+
+export function SiteHeader() {
+  const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { pathname } = useLocation();
+  const last = useRef(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 24);
+      setHidden(y > 400 && y > last.current + 4 && !openMenu);
+      if (y < last.current - 4) setHidden(false);
+      last.current = y;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [openMenu]);
+
+  useEffect(() => {
+    setOpenMenu(null);
+    setMenuOpen(false);
+  }, [pathname]);
 
   return (
     <>
       <a className="skip-link" href="#main">
         Skip to content
       </a>
-      <header className={`site-header ${scrolled ? 'is-scrolled' : ''} ${hidden ? 'is-hidden' : ''} ${megaOpen ? 'mega-open' : ''}`}>
+      <header className={`site-header ${scrolled ? 'is-scrolled' : ''} ${hidden ? 'is-hidden' : ''} ${openMenu ? 'mega-open' : ''}`}>
         <div className="header-inner">
           <Link to="/" className="header-brand" aria-label="HekayaHaus home">
             <Wordmark />
@@ -78,47 +127,13 @@ export function SiteHeader() {
           <nav className="header-nav" aria-label="Primary">
             <ul>
               {NAV.map((item) =>
-                item.mega ? (
-                  <li
-                    key={item.label}
-                    ref={megaRef}
-                    className="has-mega"
-                    onMouseEnter={() => window.matchMedia('(hover: hover)').matches && setMegaOpen(true)}
-                    onMouseLeave={() => window.matchMedia('(hover: hover)').matches && setMegaOpen(false)}
-                  >
-                    <button type="button" className="nav-link" aria-expanded={megaOpen} aria-controls="mega-menu" onClick={() => setMegaOpen((o) => !o)}>
-                      {item.label}
-                      <span className="nav-caret" aria-hidden="true" />
-                    </button>
-                    <div id="mega-menu" className="mega" hidden={!megaOpen}>
-                      <div className="mega-inner">
-                        {PILLARS.map((p) => (
-                          <Link key={p.id} to={p.route} className="mega-pillar">
-                            <span className="mega-n">{p.n}</span>
-                            <span className="mega-title">{p.name}</span>
-                            <span className="mega-desc">{p.representative.slice(0, 4).join(' · ')}</span>
-                            <span className="mega-go">
-                              Explore <ArrowIcon />
-                            </span>
-                          </Link>
-                        ))}
-                        <Link to="/allserviceshekayahaus" className="mega-all">
-                          All services <ArrowIcon />
-                        </Link>
-                      </div>
-                    </div>
-                  </li>
+                item.menu ? (
+                  <Dropdown key={item.label} item={item} open={openMenu === item.menu} setOpen={(v) => setOpenMenu(v ? item.menu! : null)} />
                 ) : (
                   <li key={item.label}>
-                    {item.to.includes('#') ? (
-                      <Link to={item.to} className="nav-link">
-                        {item.label}
-                      </Link>
-                    ) : (
-                      <NavLink to={item.to} className="nav-link">
-                        {item.label}
-                      </NavLink>
-                    )}
+                    <NavLink to={item.to} className="nav-link">
+                      {item.label}
+                    </NavLink>
                   </li>
                 ),
               )}

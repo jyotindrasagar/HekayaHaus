@@ -3,6 +3,7 @@
 import { SITE } from './site';
 import { PILLARS, SERVICE_PAGES } from './services';
 import { PROJECTS } from './work';
+import { ARTICLES } from './journal';
 
 export interface RouteMeta {
   path: string;
@@ -15,43 +16,36 @@ export interface RouteMeta {
 
 const img = (name: string) => `/media/img/${name}-1440.webp`;
 
-export const JOURNAL_THEMES = [
-  'Cinematic Video Production Trends in Dubai & UAE',
-  'AI in Modern Marketing & Automation',
-  'Brand Storytelling vs Commodity Content',
-  'Luxury Hospitality & Automotive Visual Campaigns',
-  'CGI & Fake Out-Of-Home (FOOH) Viral Mechanics',
-];
-
 export function allRoutes(): RouteMeta[] {
   return [
     {
       path: '/',
-      title: 'HekayaHaus — Beyond Seen. Into Felt. | Creative Media, Production & Marketing Haus, Dubai',
+      title: 'HekayaHaus — Beyond Seen. Into Felt. | Fastest Growing Creative Media Marketing Haus, UAE',
       description:
-        'HekayaHaus is a creative media, production, marketing and technology haus in Dubai — cinematic films, CGI & VFX, branding, performance marketing, web and AI for brands across the UAE, GCC and India.',
+        'HekayaHaus is a creative media, marketing and technology haus in Dubai. Marketing, Performance and Growth under one roof — trusted by 200+ brands across the UAE, India and beyond.',
       image: img('portrait-lightbulb-duo'),
       priority: 1,
     },
     {
       path: '/allserviceshekayahaus',
-      title: 'HekayaHaus | Creative Media & Marketing Haus — All Services',
+      title: 'What We Do — Marketing, Performance & Growth | HekayaHaus',
       description:
-        'Born from creativity, built on culture. Hekaya Haus transforms ideas into identity that last beyond the screen offering content creation, digital marketing, media production, CGI/VFX, branding, PR, billboards placement, web / App, CRM & AI solutions.',
+        'Everything your business needs to move forward, connected under one roof: Marketing, Performance and Growth — social, branding, PR, media production, performance marketing, web, CRM, AI and SEO.',
       image: img('design-grid'),
       priority: 0.9,
     },
     ...PILLARS.map((p) => ({ path: p.route, title: p.metaTitle, description: p.metaDescription, image: img(p.image), priority: 0.9 })),
     ...SERVICE_PAGES.map((s) => ({ path: `/${s.slug}`, title: s.metaTitle, description: s.metaDescription, image: img(s.image), priority: 0.8 })),
     {
-      path: '/work',
-      title: 'Work — Films, Photography, Key Art, Brands & Digital | HekayaHaus',
-      description: 'Selected HekayaHaus work across automotive, motorsport, entertainment, fashion, events, hospitality and digital products.',
+      path: '/portfolio',
+      title: 'Portfolio — The Work | HekayaHaus',
+      description:
+        'Ideas are easy to talk about. This is what happens when they become real — production, marketing, campaigns, branding and digital work by HekayaHaus.',
       image: img('auto-mercedes-dubai'),
       priority: 0.8,
     },
     ...PROJECTS.map((p) => ({
-      path: `/work/${p.slug}`,
+      path: `/portfolio/${p.slug}`,
       title: `${p.title} — ${p.discipline} | HekayaHaus`,
       description: p.summary,
       image: img(p.cover),
@@ -59,24 +53,47 @@ export function allRoutes(): RouteMeta[] {
     })),
     {
       path: '/about',
-      title: 'About HekayaHaus — Not an Agency. A Haus. | Dubai',
-      description: `${SITE.philosophy} A Haus where creativity, media and technology converge, based in Dubai and serving the UAE, GCC and India.`,
+      title: 'About HekayaHaus — A Little About Us | Dubai',
+      description:
+        'Hekaya means story. Haus means home. A creative media, marketing and technology haus in Dubai with 200+ client and brand collaborations.',
       image: img('film-set-clapper'),
       priority: 0.7,
     },
     {
       path: '/blogs',
-      title: 'Insights — HekayaHaus Journal',
-      description: 'Insights on social media, video production, branding, AI, and digital marketing from Dubai creative agency Hekaya Haus.',
+      title: 'The HekayaHaus Journal — Insights',
+      description: 'Ideas, perspectives and things worth knowing about creativity, marketing, business and technology from HekayaHaus.',
+      image: img('design-grid'),
+      priority: 0.6,
+    },
+    ...ARTICLES.map((a) => ({ path: `/blogs/${a.slug}`, title: `${a.title} | HekayaHaus Journal`, description: a.description, image: img(a.image), priority: 0.6 })),
+    {
+      path: '/contact-us',
+      title: 'Contact HekayaHaus — Let’s Talk',
+      description: 'Tell us what you’ve been trying to build. Email info@hekayahaus.com, WhatsApp +971 55 248 9492 or book a discovery call.',
+      image: img('portrait-neon'),
+      priority: 0.8,
+    },
+    {
+      path: '/careers',
+      title: 'Join the Haus — Careers & Talent | HekayaHaus',
+      description: 'Careers, collaborations and opportunities at HekayaHaus across creative, marketing, performance and technology.',
+      image: img('film-set-clapper'),
+      priority: 0.6,
+    },
+    {
+      path: '/university-partnerships',
+      title: 'University & Placement Partnerships | HekayaHaus',
+      description: 'Internships, placements, industry projects and mentorship partnerships with universities and colleges.',
       image: img('design-grid'),
       priority: 0.5,
     },
     {
-      path: '/contact-us',
-      title: 'Contact - HekayaHaus',
-      description: 'Ready to take the next step? Let’s schedule a call to discuss how we can help your business grow and succeed online.',
-      image: img('portrait-neon'),
-      priority: 0.8,
+      path: '/mentorship-collaborations',
+      title: 'Mentorship & Collaborations — Beyond Business | HekayaHaus',
+      description: 'Building businesses and encouraging the next generation: features, alumni recognition, mentorship and collaborations.',
+      image: img('portrait-lightbulb'),
+      priority: 0.5,
     },
     { path: '/privacy-policy', title: 'Privacy Policy | HekayaHaus', description: 'How HekayaHaus FZC-LLC collects and uses information submitted through this website.', priority: 0.2 },
     { path: '/terms', title: 'Terms & Conditions | HekayaHaus', description: 'Terms governing use of the HekayaHaus website.', priority: 0.2 },
@@ -101,7 +118,8 @@ export function organizationSchema() {
     email: SITE.email,
     address: { '@type': 'PostalAddress', addressLocality: 'Dubai', addressCountry: 'AE' },
     areaServed: ['United Arab Emirates', 'GCC', 'India'],
-    sameAs: [SITE.socials.instagram, SITE.socials.linkedin, SITE.socials.youtubePlaylist],
+    telephone: SITE.whatsapp,
+    sameAs: [SITE.socials.instagram, SITE.socials.linkedin, SITE.socials.youtube],
   };
 }
 

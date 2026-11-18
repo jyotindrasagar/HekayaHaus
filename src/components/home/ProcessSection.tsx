@@ -29,8 +29,12 @@ export function ProcessSection() {
     <section className="process section" id="process" aria-labelledby="process-title">
       <div className="container">
         <div className="section-head">
-          <Reveal as="p" className="eyebrow">Our process</Reveal>
-          <SplitText as="h2" text="From first idea to lasting legacy." accent={['lasting', 'legacy']} className="display-l" />
+          <Reveal as="p" className="eyebrow">Our approach</Reveal>
+          <SplitText as="h2" text="Good work doesn’t happen by accident." accent={['by', 'accident']} className="display-l" />
+          <Reveal as="p" className="section-intro" delay={100}>
+            Behind every strong outcome is a clear understanding of what needs to happen, why it matters and who’s
+            responsible for making it happen. Our process keeps the thinking sharp and the execution accountable.
+          </Reveal>
         </div>
         <div className="process-grid">
           <div className="process-visual" aria-hidden="true">

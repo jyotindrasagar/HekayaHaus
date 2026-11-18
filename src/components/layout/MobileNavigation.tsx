@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { SITE } from '../../data/site';
 import { PILLARS } from '../../data/services';
-import { NAV, Wordmark } from './SiteHeader';
+import { JOIN_LINKS, Wordmark } from './SiteHeader';
 
 export function MobileNavigation({ open, onClose }: { open: boolean; onClose: () => void }) {
   const panel = useRef<HTMLDivElement>(null);
@@ -36,12 +36,20 @@ export function MobileNavigation({ open, onClose }: { open: boolean; onClose: ()
     };
   }, [open, onClose]);
 
+  const items = [
+    { label: 'Portfolio', to: '/portfolio' },
+    { label: 'What We Do', to: '/allserviceshekayahaus', sub: PILLARS.map((p) => ({ label: `${p.n} ${p.name}`, to: p.route })) },
+    { label: 'About', to: '/about' },
+    { label: 'Contact', to: '/contact-us' },
+    { label: 'Join the Haus', to: '/careers', sub: JOIN_LINKS.map((j) => ({ label: j.short, to: j.to })) },
+  ];
+
   return (
     <div id="mobile-nav" className={`mnav ${open ? 'open' : ''}`} aria-hidden={!open} inert={!open || undefined}>
       <div className="mnav-panel" ref={panel} role="dialog" aria-modal="true" aria-label="Menu">
         <div className="mnav-top">
           <Link to="/" onClick={onClose} aria-label="HekayaHaus home">
-            <Wordmark light />
+            <Wordmark light tag={false} />
           </Link>
           <button ref={closeBtn} type="button" className="mnav-close" onClick={onClose} aria-label="Close menu">
             <span />
@@ -50,26 +58,22 @@ export function MobileNavigation({ open, onClose }: { open: boolean; onClose: ()
         </div>
         <nav aria-label="Mobile">
           <ul className="mnav-list">
-            {NAV.filter((n) => !n.mega).slice(0, 1).map((n, i) => (
+            {items.map((n, i) => (
               <li key={n.label} style={{ '--i': i } as React.CSSProperties}>
-                <Link to={n.to} onClick={onClose}>{n.label}</Link>
-              </li>
-            ))}
-            <li style={{ '--i': 1 } as React.CSSProperties}>
-              <Link to="/allserviceshekayahaus" onClick={onClose}>What We Do</Link>
-              <ul className="mnav-sub">
-                {PILLARS.map((p) => (
-                  <li key={p.id}>
-                    <Link to={p.route} onClick={onClose}>
-                      <span>{p.n}</span> {p.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </li>
-            {NAV.filter((n) => !n.mega).slice(1).map((n, i) => (
-              <li key={n.label} style={{ '--i': i + 2 } as React.CSSProperties}>
-                <Link to={n.to} onClick={onClose}>{n.label}</Link>
+                <Link to={n.to} onClick={onClose}>
+                  {n.label}
+                </Link>
+                {n.sub && (
+                  <ul className="mnav-sub">
+                    {n.sub.map((s) => (
+                      <li key={s.to}>
+                        <Link to={s.to} onClick={onClose}>
+                          {s.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
           </ul>
@@ -79,10 +83,12 @@ export function MobileNavigation({ open, onClose }: { open: boolean; onClose: ()
             <span className="btn-label">Book a discovery call</span>
           </a>
           <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+          <a href={SITE.whatsappUrl} target="_blank" rel="noopener noreferrer">WhatsApp {SITE.whatsappDisplay}</a>
           <div className="mnav-social">
+            <Link to="/blogs" onClick={onClose}>Insights</Link>
             <a href={SITE.socials.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>
             <a href={SITE.socials.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a href={SITE.socials.youtubePlaylist} target="_blank" rel="noopener noreferrer">YouTube</a>
+            <a href={SITE.socials.youtube} target="_blank" rel="noopener noreferrer">YouTube</a>
           </div>
         </div>
       </div>

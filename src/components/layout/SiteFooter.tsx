@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { SITE } from '../../data/site';
 import { PILLARS, SERVICE_PAGES } from '../../data/services';
-import { Wordmark } from './SiteHeader';
+import { JOIN_LINKS, Wordmark } from './SiteHeader';
 
 export function SocialIcons() {
   return (
@@ -17,8 +17,13 @@ export function SocialIcons() {
         </a>
       </li>
       <li>
-        <a href={SITE.socials.youtubePlaylist} target="_blank" rel="noopener noreferrer" aria-label="HekayaHaus on YouTube">
+        <a href={SITE.socials.youtube} target="_blank" rel="noopener noreferrer" aria-label="HekayaHaus on YouTube">
           <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M21.6 7.2a2.5 2.5 0 00-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 002.4 7.2 26 26 0 002 12a26 26 0 00.4 4.8 2.5 2.5 0 001.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 001.8-1.8A26 26 0 0022 12a26 26 0 00-.4-4.8zM10 15V9l5.2 3z" fill="currentColor" /></svg>
+        </a>
+      </li>
+      <li>
+        <a href={SITE.whatsappUrl} target="_blank" rel="noopener noreferrer" aria-label={`WhatsApp ${SITE.whatsappDisplay}`}>
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3a9 9 0 00-7.8 13.5L3 21l4.6-1.2A9 9 0 1012 3z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><path d="M9 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4 0 .5.4l.6 1.5c.1.2 0 .4-.1.6l-.4.5c-.1.1-.1.3 0 .5a6 6 0 002.6 2.4c.2.1.4.1.5 0l.5-.6c.2-.2.4-.2.6-.1l1.5.7c.2.1.3.3.3.5 0 .9-.7 1.6-1.6 1.7-1 .1-2.4-.3-4-1.7-1.8-1.6-2.4-3.2-2.4-4 0-.4.1-.7.2-1z" fill="currentColor" /></svg>
         </a>
       </li>
       <li>
@@ -39,16 +44,28 @@ export function SiteFooter() {
             <Link to="/" aria-label="HekayaHaus home">
               <Wordmark />
             </Link>
-            <p>{SITE.philosophy}</p>
+            <p>{SITE.description}</p>
             <SocialIcons />
           </div>
-          <nav aria-label="What we do">
-            <h2 className="footer-h">What we do</h2>
+          <nav aria-label="Explore">
+            <h2 className="footer-h">Explore</h2>
+            <ul>
+              <li><Link to="/portfolio">Portfolio</Link></li>
+              <li><Link to="/about">About</Link></li>
+              <li><Link to="/blogs">Insights</Link></li>
+              <li><Link to="/contact-us">Contact</Link></li>
+              {JOIN_LINKS.map((j) => (
+                <li key={j.to}><Link to={j.to}>{j.short}</Link></li>
+              ))}
+            </ul>
+          </nav>
+          <nav aria-label="Capabilities">
+            <h2 className="footer-h">Capabilities</h2>
             <ul>
               {PILLARS.map((p) => (
-                <li key={p.id}><Link to={p.route}>{p.name}</Link></li>
+                <li key={p.id}><Link to={p.route}>{p.n} — {p.name}</Link></li>
               ))}
-              <li><Link to="/allserviceshekayahaus">All services</Link></li>
+              <li><Link to="/allserviceshekayahaus">All capabilities</Link></li>
             </ul>
           </nav>
           <nav aria-label="Services">
@@ -59,24 +76,15 @@ export function SiteFooter() {
               ))}
             </ul>
           </nav>
-          <nav aria-label="Company">
-            <h2 className="footer-h">Company</h2>
-            <ul>
-              <li><Link to="/work">Work</Link></li>
-              <li><Link to="/about">About</Link></li>
-              <li><Link to="/blogs">Insights</Link></li>
-              <li><Link to="/contact-us">Contact</Link></li>
-              <li><a href={SITE.calendar} target="_blank" rel="noopener noreferrer">Book a discovery call</a></li>
-            </ul>
-          </nav>
           <div>
-            <h2 className="footer-h">Studio</h2>
+            <h2 className="footer-h">Get in touch</h2>
+            <p className="footer-touch">Have a project, an ambition or a challenge worth discussing?</p>
             <address>
-              {SITE.location}
-              <br />
-              Serving the UAE, GCC &amp; India
-              <br />
               <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+              <br />
+              <a href={SITE.whatsappUrl} target="_blank" rel="noopener noreferrer">WhatsApp {SITE.whatsappDisplay}</a>
+              <br />
+              {SITE.location}
             </address>
           </div>
         </div>

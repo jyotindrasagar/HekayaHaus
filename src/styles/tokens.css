@@ -29,8 +29,8 @@
   --fs-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
   --fs-display-s: clamp(1.6rem, 1.3rem + 1vw, 2.2rem);
   --fs-display-m: clamp(2.1rem, 1.6rem + 2vw, 3.4rem);
-  --fs-display-l: clamp(2.7rem, 1.8rem + 3.8vw, 5.6rem);
-  --fs-display-xl: clamp(3.2rem, 1.6rem + 6.4vw, 8.4rem);
+  --fs-display-l: clamp(2.35rem, 1.8rem + 3.8vw, 5.6rem);
+  --fs-display-xl: clamp(2.8rem, 1.6rem + 6.4vw, 8.4rem);
   --fs-hero: clamp(3.6rem, 9vw, 9rem);
 
   --space-1: 0.5rem;
